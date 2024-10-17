@@ -6,7 +6,7 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('Idle');
   const [moveValue, setMoveValue] = useState(0);
   const [chartData, setChartData] = useState([]);
-  const [gamepadStatus, setGamepadStatus] = useState('No gamepad connected');
+  const [gamepadStatus, setGamepadStatus] = useState('No gamepad connected!');
   const videoRef = useRef(null);
 
   const tabs = ['Idle', 'Direct Drive', 'Autonomous Drive', 'Camera Feed', 'Test'];
