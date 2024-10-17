@@ -6,9 +6,10 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('Gamepad');
   const [moveValue, setMoveValue] = useState(0);
   const [chartData, setChartData] = useState([]);
+  const [gamepadStatus, setGamepadStatus] = useState('No gamepad connected');
   const videoRef = useRef(null);
 
-  const tabs = ['Gamepad', 'Idle', 'Direct Drive', 'Autonomous Drive', 'Camera Feed', 'Test'];
+  const tabs = ['Idle', 'Direct Drive', 'Autonomous Drive', 'Camera Feed', 'Test'];
 
   useEffect(() => {
     const generateData = () => {
@@ -40,6 +41,24 @@ const App = () => {
           console.error("Error accessing webcam:", error);
         });
     }
+  }, []);
+
+  useEffect(() => {
+    const handleGamepadConnected = (e) => {
+      setGamepadStatus(`Gamepad connected!: ${e.gamepad.id}`);
+    };
+
+    const handleGamepadDisconnected = () => {
+      setGamepadStatus('No gamepad connected!');
+    };
+
+    window.addEventListener('gamepadconnected', handleGamepadConnected);
+    window.addEventListener('gamepaddisconnected', handleGamepadDisconnected);
+
+    return () => {
+      window.removeEventListener('gamepadconnected', handleGamepadConnected);
+      window.removeEventListener('gamepaddisconnected', handleGamepadDisconnected);
+    };
   }, []);
 
   const CommandButton = ({ label }) => (
@@ -160,6 +179,10 @@ const App = () => {
                 Live Value: 0.0
               </div>
             </div>
+          </div>
+          <div className="bg-gray-100 p-4 rounded">
+            <h2 className="text-center mb-2 text-lg font-semibold">Gamepad Status</h2>
+            <p className="text-center">{gamepadStatus}</p>
           </div>
         </div>
       </div>
