@@ -129,7 +129,7 @@ const App = () => {
           <div className="bg-white p-4 rounded-lg shadow">
             <h2 className="text-center mb-2 text-lg font-semibold text-gray-800">Controls</h2>
             <div className="grid grid-cols-3 gap-2 mb-4">
-              {['Raise Bucket Ladder', 'Lower Bucket Ladder', 'Raise Deposit Bin', 'Lower Deposit Bin', 'Dig', 'Dump'].map((label, index) => (
+              {['Raise Bucket Ladder', 'Raise Deposit Bin', 'Dig', 'Lower Bucket Ladder', 'Lower Deposit Bin', 'Dump'].map((label, index) => (
                 <CommandButton key={index} label={label} />
               ))}
             </div>
