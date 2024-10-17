@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { Camera } from 'lucide-react';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('Gamepad');
   const [moveValue, setMoveValue] = useState(0);
   const [chartData, setChartData] = useState([]);
+  const videoRef = useRef(null);
 
   const tabs = ['Gamepad', 'Idle', 'Direct Drive', 'Autonomous Drive', 'Camera Feed', 'Test'];
 
@@ -24,6 +26,20 @@ const App = () => {
     const interval = setInterval(generateData, 5000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch(error => {
+          console.error("Error accessing webcam:", error);
+        });
+    }
   }, []);
 
   const CommandButton = ({ label }) => (
@@ -72,12 +88,27 @@ const App = () => {
         </ul>
       </nav>
 
+      <div className="w-full bg-gray-100 p-4 rounded">
+        <h2 className="text-center mb-4">Live Webcam Feed</h2>
+        <div className="flex justify-center items-center">
+          <div className="relative w-full max-w-md aspect-video bg-black rounded-lg overflow-hidden">
+            <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+            <div className="absolute top-2 left-2 bg-gray-800 text-white rounded-full p-2">
+              <Camera size={24} />
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div className="w-full bg-gray-100 p-4 rounded mb-8">
         <h2 className="text-center mb-4">Commands</h2>
-        <div className="flex justify-center">
-          {['Raise', 'Raise', 'Raise', 'Raise', 'Raise', 'Raise'].map((label, index) => (
+        <div className="flex justify-center space-x-3">
+          {['Raise Bucket Ladder', 'Lower Bucket Ladder', 'Raise Deposit Bin', 'Lower Deposit Bin', 'Dig ', 'Dump'].map((label, index) => (
             <CommandButton key={index} label={label} />
           ))}
+          <button className="flex-1 p-2 bg-red-500 text-white rounded text-center">
+            ESTOP
+          </button>          
         </div>
       </div>
 
@@ -114,7 +145,7 @@ const App = () => {
         <p className="text-center mt-2">Play around: {moveValue}°</p>
       </div>
 
-      <div className="w-full bg-gray-100 p-4 rounded">
+      <div className="w-full bg-gray-100 p-4 rounded mb-8">
         <h2 className="text-center mb-4">Other Readings</h2>
         <div className="flex justify-center">
           <div className="bg-gray-800 text-white rounded px-2 py-1 m-2">
